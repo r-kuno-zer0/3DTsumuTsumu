@@ -11,6 +11,10 @@ public class TouchManager : MonoBehaviour
     GameObject cube;
     [SerializeField]
     public Text text;
+    [SerializeField]
+    ScoreManager scoreManager;
+    [SerializeField]
+    GameObject deleteEffectObj;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,7 +34,16 @@ public class TouchManager : MonoBehaviour
                 if(h.Length > 0){
                     if(h[1].collider.CompareTag("Ball") && !h[1].collider.GetComponent<BallObject>().isTouch)
                     {
-                        touchBallList.Add(h[1].collider.gameObject);
+                        if(h[1].collider.GetComponent<BallObject>().color == GameResources.BallColor.bomb){
+                            h[1].collider.GetComponent<BallObject>().Explosion(deleteEffectObj);
+                            scoreManager.AddScore(100);
+                        }
+                        else
+                        {
+                            h[1].collider.GetComponent<BallObject>().isTouch = true;
+                            touchBallList.Add(h[1].collider.gameObject);
+                        }
+                        
                     }
                 }
             }
@@ -77,11 +90,15 @@ public class TouchManager : MonoBehaviour
 
         foreach(GameObject go in touchBallList){
             go.GetComponent<BallObject>().isTouch = false;
-            if(cnt > 3){
-                //ここで消すときのSE鳴らす
+            if(cnt >= 3){
+                GameObject delObj = Instantiate(deleteEffectObj);
+                delObj.transform.position = go.transform.position;
                 Destroy(go);
             }
         }
         touchBallList.Clear();
+        if(cnt >= 3){
+            scoreManager.AddScore((int)Mathf.Pow(2,cnt));
+        }
     }
 }

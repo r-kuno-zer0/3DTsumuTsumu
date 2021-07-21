@@ -5,5 +5,6 @@
         blue,
         green,
         purple,
+        bomb,
     }
 }

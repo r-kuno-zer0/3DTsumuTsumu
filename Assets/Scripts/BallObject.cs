@@ -48,6 +48,22 @@ public class BallObject : MonoBehaviour
                 GetComponent<BallObject>().renderer2.material.SetColor("_Color", new Color(1, 0, 1));
                 //gameObject.GetComponent<Renderer>().material.color = new Color(1,0,1);
                 break;
+            case GameResources.BallColor.bomb:
+                GetComponent<BallObject>().renderer2.material.SetColor("_Color", new Color(0,0,0));
+                break;
+        }
+    }
+
+    public void Explosion(GameObject deleteObject)
+    {
+        var h = Physics.SphereCastAll(transform.position,5.0f,Vector3.forward);
+        Debug.Log(h.Length);
+        foreach(var hit in h){
+            if(hit.collider.tag == "Ball"){
+                GameObject delObj = Instantiate(deleteObject);
+                delObj.transform.position = hit.collider.gameObject.transform.position;
+                Destroy(hit.collider.gameObject);
+            }
         }
     }
 }
