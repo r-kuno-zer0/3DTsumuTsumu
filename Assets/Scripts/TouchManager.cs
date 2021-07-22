@@ -15,10 +15,12 @@ public class TouchManager : MonoBehaviour
     ScoreManager scoreManager;
     [SerializeField]
     GameObject deleteEffectObj;
+
+    public GameObject _audioManager;
     // Start is called before the first frame update
     void Start()
     {
-        
+         
     }
 
     // Update is called once per frame
@@ -35,11 +37,13 @@ public class TouchManager : MonoBehaviour
                     if(h[1].collider.CompareTag("Ball") && !h[1].collider.GetComponent<BallObject>().isTouch)
                     {
                         if(h[1].collider.GetComponent<BallObject>().color == GameResources.BallColor.bomb){
+                             _audioManager.GetComponent<AudioManager>().PlayExplosion();
                             h[1].collider.GetComponent<BallObject>().Explosion(deleteEffectObj);
                             scoreManager.AddScore(100);
                         }
                         else
                         {
+                            _audioManager.GetComponent<AudioManager>().PlaySelectSound();
                             h[1].collider.GetComponent<BallObject>().isTouch = true;
                             touchBallList.Add(h[1].collider.gameObject);
                         }
@@ -65,7 +69,7 @@ public class TouchManager : MonoBehaviour
                     if(h[1].collider.tag == "Ball" && !h[1].collider.GetComponent<BallObject>().isTouch &&
                     touchBallList[0].GetComponent<BallObject>().color == h[1].collider.GetComponent<BallObject>().color)
                     {
-
+                        _audioManager.GetComponent<AudioManager>().PlaySelectSound();
                         h[1].collider.GetComponent<BallObject>().isTouch = true;
                         touchBallList.Add(h[1].collider.gameObject);
                     }
@@ -91,6 +95,7 @@ public class TouchManager : MonoBehaviour
         foreach(GameObject go in touchBallList){
             go.GetComponent<BallObject>().isTouch = false;
             if(cnt >= 3){
+                _audioManager.GetComponent<AudioManager>().PlayDeleteSound();
                 GameObject delObj = Instantiate(deleteEffectObj);
                 delObj.transform.position = go.transform.position;
                 Destroy(go);
