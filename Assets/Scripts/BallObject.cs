@@ -66,4 +66,11 @@ public class BallObject : MonoBehaviour
             }
         }
     }
+
+    public void ShuffleBall(){
+        Debug.Log("CallMethod");
+        Rigidbody rb = GetComponent<Rigidbody>();
+        Debug.Log(rb);
+        rb.AddForce(0f,-100f,0f,ForceMode.Impulse);
+    }
 }
